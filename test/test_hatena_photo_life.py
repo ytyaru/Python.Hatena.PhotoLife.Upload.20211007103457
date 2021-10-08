@@ -25,15 +25,15 @@ class TestHatenaPhotoLife(unittest.TestCase):
         headers = WSSE.from_str(username, api_key)
         api = HatenaPhotoLife(headers)
         with self.assertRaises(ValueError, msg='指定されたファイルはpng,jpg,gifのいずれでもありません'):
-            api.post(Path.here('test.svg'))
+            api.post(Path.here('test_data/test.svg'))
     @mock.patch("requests.post")
-    def test_post_not_support_type(self, mock_post):
+    def test_post_over_size(self, mock_post):
         username = 'user1'
         api_key = 'key1'
         headers = WSSE.from_str(username, api_key)
         api = HatenaPhotoLife(headers)
-        with self.assertRaises(ValueError, msg='指定されたファイルはpng,jpg,gifのいずれでもありません'):
-            api.post(Path.here('test.svg'))
+        with self.assertRaises(ValueError, msg='指定されたファイルのサイズは10MBを超えています'):
+            api.post(Path.here('test_data/over_size.png'))
 
 
 
