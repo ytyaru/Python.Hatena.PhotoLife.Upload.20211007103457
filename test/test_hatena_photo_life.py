@@ -34,7 +34,43 @@ class TestHatenaPhotoLife(unittest.TestCase):
         api = HatenaPhotoLife(headers)
         with self.assertRaises(ValueError, msg='指定されたファイルのサイズは10MBを超えています'):
             api.post(Path.here('test_data/over_size.png'))
-
+    @mock.patch("requests.post")
+    def test_post_support_types(self, mock_post):
+        username = 'user1'
+        api_key = 'key1'
+        headers = WSSE.from_str(username, api_key)
+        api = HatenaPhotoLife(headers)
+        api.post(Path.here('test_data/test.png'))
+        api.post(Path.here('test_data/test.jpg'))
+        api.post(Path.here('test_data/test.gif'))
+    @mock.patch("requests.put")
+    def test_set_title(self, mock_post):
+        username = 'user1'
+        api_key = 'key1'
+        headers = WSSE.from_str(username, api_key)
+        api = HatenaPhotoLife(headers)
+        api.set_title('yyyyMMddHHmmss', 'new-title')
+    @mock.patch("requests.delete")
+    def test_delete(self, mock_post):
+        username = 'user1'
+        api_key = 'key1'
+        headers = WSSE.from_str(username, api_key)
+        api = HatenaPhotoLife(headers)
+        api.delete('yyyyMMddHHmmss')
+    @mock.patch("requests.get")
+    def test_get(self, mock_post):
+        username = 'user1'
+        api_key = 'key1'
+        headers = WSSE.from_str(username, api_key)
+        api = HatenaPhotoLife(headers)
+        api.get('yyyyMMddHHmmss')
+    @mock.patch("requests.get")
+    def test_feed(self, mock_post):
+        username = 'user1'
+        api_key = 'key1'
+        headers = WSSE.from_str(username, api_key)
+        api = HatenaPhotoLife(headers)
+        api.feed()
 
 
 if __name__ == "__main__":

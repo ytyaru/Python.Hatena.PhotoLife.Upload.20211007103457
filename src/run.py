@@ -6,22 +6,10 @@ import jsonschema
 import argparse
 import xmltodict
 from path import Path
-#from WSSE import wsse
-#from HatenaPhotoLife import hatena_photo_life
 from wsse import WSSE 
 from hatena_photo_life import HatenaPhotoLife
 from FileReader import FileReader
 VERSION='0.0.1'
-"""
-class FileReader:
-    @classmethod
-    def text(self, path):
-        with open(path, mode='r', encoding='utf-8') as f: return f.read().rstrip('\n')
-    @classmethod
-    def json(self, path):
-        with open(path, mode='r', encoding='utf-8') as f: return json.load(f)
-"""
-
 def parse_command_by_argparse():
     parser = argparse.ArgumentParser(description=f'画像をアップロードする。はてなフォトライフへ。	{VERSION}')
     parser.add_argument('path', help='画像ファイルパス')
@@ -51,16 +39,9 @@ def test_xml():
     print(xml['entry']['hatena:imageurl'])
     print(xml['entry']['hatena:imageurlsmall'])
     print(xml['entry']['hatena:syntax'])
-#    with open('test.xml', 'r', encoding='utf-8') as f:
-#        xml = xmltodict.parse(f.read())
-#        print(xml)
-#if __name__ == '__main__':
-#    main()
-#    valid_secret()
 if __name__ == '__main__':
     # コマンド解析
     args = parse_command_by_argparse()
-    sys.exit(1)
     # APIクライアント生成
     api = HatenaPhotoLife(
             WSSE.from_json(

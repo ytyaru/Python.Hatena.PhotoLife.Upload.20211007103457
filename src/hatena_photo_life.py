@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf8
 import os
+from base64 import b64encode
 import requests
 import mimetypes
 import xmltodict
+import pathlib
 from path import Path
 class HatenaPhotoLife:
     def __init__(self, headers:dict=None):
@@ -12,7 +14,7 @@ class HatenaPhotoLife:
     def post(self, path:str, title:str=None, folder:str=None, generator:str=None):
         if not os.path.isfile(path): raise FileNotFoundError(f'[ERROR] 指定されたファイルは存在しません。: {path}\nhttps://f.hatena.ne.jp/help')
         mimetype = mimetypes.guess_type(path)[0]
-        if Path.ext(path).lower() not in ['png', 'jpg', 'jpeg', 'gif']: raise ValueError(f'[ERROR] 指定されたファイルはpng,jpg,gifのいずれでもありません。: {path}\nhttps://f.hatena.ne.jp/help')
+        if Path.ext(path).lower() not in ['.png', '.jpg', '.jpeg', '.gif']: raise ValueError(f'[ERROR] 指定されたファイルはpng,jpg,gifのいずれでもありません。: {path}\nhttps://f.hatena.ne.jp/help')
         if 10*1000*1000 < os.path.getsize(path): raise ValueError(f'[ERROR] 指定されたファイルのサイズは10MBを超えています。: {path}\nhttps://f.hatena.ne.jp/help')
 
         data = self._make_request_data(
@@ -32,7 +34,7 @@ class HatenaPhotoLife:
     def _make_request_data(self, path:str=None, title:str=None, folder:str=None, generator:str=None) -> str:
         if path and not title: title = os.path.basename(path)
         title = '' if not title else f'<title>{title}</title>'
-        content = '' if not path else f'<content mode="base64" type="{mimetypes.guess_type(path)[0]}">{b64encode(Path(path).read_bytes()).decode()}</content>'
+        content = '' if not path else f'<content mode="base64" type="{mimetypes.guess_type(path)[0]}">{b64encode(pathlib.Path(path).read_bytes()).decode()}</content>'
         folder = '' if not folder else f'<dc:subject>{folder}</dc:subjetct>'
         generator = '' if not generator else f'<generator>{generator}</generator>'
         return f'<entry xmlns="http://purl.org/atom/ns#">{title}{content}{folder}{generator}</entry>'
