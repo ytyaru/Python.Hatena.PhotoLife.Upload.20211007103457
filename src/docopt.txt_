@@ -1,0 +1,39 @@
+画像をアップロードする。はてなフォトライフへ。	${VERSION}
+${THIS_NAME} [-t title] [-f folder] [-g generator] [-o output-format] PATH
+Usage:
+  upimg
+  upimg (-h|--help)
+  upimg (-v|--version)
+  upimg [-t|--title <TITLE>] [-f|--folder <FOLDER>] [-g|--generator <GENERATOR>] [-o|--output-format <OUTPUT-FORMAT>] <PATH>
+  upimg [-t|--title <TITLE>] <PATH>
+  upimg [-f|--folder <FOLDER>] <PATH>
+  upimg [-g|--generator <GENERATOR>] <PATH>
+  upimg [-o|--output-format <OUTPUT-FORMAT>] <PATH>
+Options:
+  <PATH>              画像ファイルパス
+  -t --title          画像のタイトル。初期値はPATHのファイル名
+  -f --folder         アップロード先のフォルダ名
+  -g --generator      アップロードしたツール名（フォルダ振分用）
+  -o --output-format  出力形式 [default: text]
+                      default  textと同じ。
+                      text     hatena:imageurl,
+                               hatena:imageurlsmall,
+                               hatena:syntax
+                               を1行ずつにして返す。
+                      xml      APIレスポンスをそのまま返す。
+Settings:
+  secret.json
+    必須 username:      はてなID
+    必須 api_key:       AtomPub API key http://blog.hatena.ne.jp/my/config/detail
+    任意 folder:        デフォルトのアップロード先フォルダ名
+    任意 folders:       アップロード先フォルダ名のリスト
+    任意 generator:     デフォルトのアップロードツール名
+    任意 generators:    アップロードツール名のリスト
+    任意 output_format: デフォルトの出力形式
+API Documents:
+  https://f.hatena.ne.jp/help
+  http://developer.hatena.ne.jp/ja/documents/fotolife/apis/atom
+  http://developer.hatena.ne.jp/ja/documents/auth/apis/wsse
+output-exmaple:
+  URL: https://cdn-ak.f.st-hatena.com/images/fotolife/y/ytyaru/20211006/20211006125842.png
+  ID:  f:id:ytyaru:20211006125842p:image

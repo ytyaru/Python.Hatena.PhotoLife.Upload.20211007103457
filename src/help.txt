@@ -1,0 +1,28 @@
+画像をアップロードする。はてなフォトライフへ。	${VERSION}
+${THIS_NAME} [-t title] [-f folder] [-g generator] [-p] PATH
+${THIS_NAME} [-t title] [-f folder] [-g generator] [-o output-format] PATH
+Auguments:
+  PATH                  画像ファイルパス
+Options:
+  -t --title              画像のタイトル。初期値はPATHのファイル名。
+  -f --folder             アップロード先のフォルダ名。
+  -g --generator          アップロードしたツール名（フォルダ振分用）
+  -p --not-parse-response API応答をパースせず全XMLを出力する。
+                          デフォルトでは以下3つを1行おきに出力する。
+                          hatena:imageurl, hatena:imageurlsmall, hatena:syntax
+Settings:
+  secret.json
+    username:      はてなID
+    api_key:       AtomPub API key http://blog.hatena.ne.jp/my/config/detail
+    folder:        デフォルトのアップロード先フォルダ名
+    folders:       アップロード先フォルダ名のリスト
+    generator:     デフォルトのアップロードツール名
+    generators:    アップロードツール名のリスト
+    output_format: デフォルトの出力形式
+API Documents:
+  https://f.hatena.ne.jp/help
+  http://developer.hatena.ne.jp/ja/documents/fotolife/apis/atom
+  http://developer.hatena.ne.jp/ja/documents/auth/apis/wsse
+output-exmaple:
+  URL: https://cdn-ak.f.st-hatena.com/images/fotolife/y/ytyaru/20211006/20211006125842.png
+  ID:  f:id:ytyaru:20211006125842p:image

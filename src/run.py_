@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+# coding: utf8
+from base64 import b64encode
+from datetime import datetime
+from hashlib import sha1
+import random
+import mimetypes
+import requests
+import os, sys
+from pathlib import Path
+import json
+import jsonschema 
+import argparse
+import docopt
+import xmltodict
+import path
+VERSION = '0.0.1'
+username = 'XX'
+api_key  = 'XX'
+def wsse(username: str, api_key: str) ->str:
+    created = datetime.now().isoformat() + "Z"
+    b_nonce = sha1(str(random.random()).encode()).digest()
+    b_digest = sha1(b_nonce + created.encode() + api_key.encode()).digest()
+    return f'UsernameToken Username="{username}", PasswordDigest="{b64encode(b_digest).decode()}", Nonce="{b64encode(b_nonce).decode()}", Created="{created}"'
+
+def create_data(path:str='./test.png', title:str=None, folder:str=None, generator:str=None) ->str:
+    if not title: title = os.path.basename(path)
+    folder = '' if not folder else f'<dc:subject>{folder}</dc:subjetct>'
+    generator = '' if not generator else f'<generator>{generator}</generator>'
+    return f"""<entry xmlns="http://purl.org/atom/ns#">
+<title>{title}</title>
+<content mode="base64" type="{mimetypes.guess_type(path)[0]}">{b64encode(Path(path).read_bytes()).decode()}</content>
+{folder}
+{generator}
+</entry>"""
+    
+def post_hatena(data):
+    headers = {'X-WSSE': wsse(username, api_key)}
+    url = 'https://f.hatena.ne.jp/atom/post/'
+    r = requests.post(url, data=data, headers=headers)
+    try:
+        r.raise_for_status()
+        parse_response(r.text)
+    except:
+        sys.stderr.write(f'Error!\nstatus_code: {r.status_code}\nmessage: {r.text}')
+    print('text       = ' + r.text)
+
+def main():
+    test_xml()
+    parse_command()
+    valid_secret()
+    data = create_data(
+        path='/tmp/work/19922005.png',
+        folder='profile',
+        generator='api')
+#    post_hatena(data)
+    print(data)
+
+def load_text(name):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
+    with open(path, 'r', encoding='utf-8') as f: return f.read().strip()
+def load_json(name):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), name)
+    with open(path, 'r', encoding='utf-8') as f: return json.load(f)
+def load_secret(): return load_json('secret.json')
+def load_secret_schema(): return load_json('secret-schema.json')
+def valid_secret():
+    try:
+        j = load_secret()
+        jsonschema.validate(j, load_secret_schema())
+        print(j)
+        return j
+    except jsonschema.ValidationError as e:
+        print('[ERROR] secret.json 形式エラーです。secret-schema.json に従ってください。', file=sys.stderr)
+        print(e, file=sys.stderr)
+        sys.exit(1)
+def parse_command():
+    parse_command_by_argparse()
+def parse_command_by_argparse():
+    parser = argparse.ArgumentParser(description=f'画像をアップロードする。はてなフォトライフへ。	{VERSION}')
+    parser.add_argument('path', help='画像ファイルパス')
+    parser.add_argument('-t', '--title', help='画像のタイトル（初期値＝pathのファイル名）')
+    parser.add_argument('-f', '--folder', help='アップロード先のフォルダ名')
+    parser.add_argument('-g', '--generator', help='アップロードしたツール名（フォルダ振分用）')
+    parser.add_argument('-p', '--not-parse-response', action='store_true', help='API応答をパースせず全XMLを出力する。デフォルトでは以下3つを1行おきに出力する。hatena:imageurl, hatena:imageurlsmall, hatena:syntax', type=bool, default=False)
+ #   parser.add_argument('-o', '--output-format', help='出力形式', default='text', choices=['text', 'xml'])
+ 
+    args = parser.parse_args()
+    print(args)
+def parse_command_by_docopt():
+    args = docopt.docopt(load_text('docopt.txt'))
+    for k,v in args.items():
+        print("  {0:<20}{1:<20}{2:<20}".format(str(k), str(v), str(type(v))))
+
+def parse_response(response_text):
+    xml = xmltodict.parse(response_text)
+#    print(xml['entry']['dc:subject']['#text'])
+#    print(xml['entry']['generator']['#text'])
+    print(xml['entry']['hatena:imageurl'])
+    print(xml['entry']['hatena:imageurlsmall'])
+    print(xml['entry']['hatena:syntax'])
+    
+def test_xml():
+    xml = xmltodict.parse(load_text('test-3.xml'))
+    print(xml)
+    print(xml['entry']['dc:subject']['#text'])
+    print(xml['entry']['generator']['#text'])
+    print(xml['entry']['hatena:imageurl'])
+    print(xml['entry']['hatena:imageurlsmall'])
+    print(xml['entry']['hatena:syntax'])
+#    with open('test.xml', 'r', encoding='utf-8') as f:
+#        xml = xmltodict.parse(f.read())
+#        print(xml)
+if __name__ == '__main__':
+    main()
+#    valid_secret()

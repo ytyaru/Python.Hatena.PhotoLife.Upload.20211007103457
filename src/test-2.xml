@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<entry xmlns="http://purl.org/atom/ns#" xmlns:hatena="http://www.hatena.ne.jp/info/xmlns#">
+  <title>Sample</title>
+  <link rel="alternate" type="text/html" href="http://f.hatena.ne.jp/naoya/XXXXXXXXXXXXXX"/>
+  <link rel="service.edit" type="application/x.atom+xml" href="http://f.hatena.ne.jp/atom/edit/XXXXXXXXXXXXXX" title="Sample"/>
+  <issued>2005-01-14T17:01:29+09:00</issued>
+  <author>
+    <name>naoya</name>
+  </author>
+  <generator url="http://f.hatena.ne.jp/" version="1.0">Hatena::Fotolife</generator>
+  <dc:subject xmlns:dc="http://purl.org/dc/elements/1.1/">YYYYYY</dc:subjetct>
+  <id>tag:hatena.ne.jp,2005:fotolife-naoya-XXXXXXXXXXXXXX</id>
+  <hatena:imageurl>http://f.hatena.ne.jp/images/fotolife/n/naoya/XXXXXXXX/XXXXXXXXXXXXXX.jpg</hatena:imageurl>
+  <hatena:imageurlsmall>http://f.hatena.ne.jp/images/fotolife/n/naoya/XXXXXXXX/XXXXXXXXXXXXXX_m.gif</hatena:imageurlsmall>
+  <hatena:syntax>f:id:naoya:XXXXXXXXXXXXXX:image</hatena:syntax>
+</entry>
