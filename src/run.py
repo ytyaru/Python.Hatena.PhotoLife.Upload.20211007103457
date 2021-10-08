@@ -5,12 +5,14 @@ import json
 import jsonschema 
 import argparse
 import xmltodict
-import path
+from path import Path
 #from WSSE import wsse
 #from HatenaPhotoLife import hatena_photo_life
 from wsse import WSSE 
 from hatena_photo_life import HatenaPhotoLife
+from FileReader import FileReader
 VERSION='0.0.1'
+"""
 class FileReader:
     @classmethod
     def text(self, path):
@@ -18,6 +20,7 @@ class FileReader:
     @classmethod
     def json(self, path):
         with open(path, mode='r', encoding='utf-8') as f: return json.load(f)
+"""
 
 def parse_command_by_argparse():
     parser = argparse.ArgumentParser(description=f'画像をアップロードする。はてなフォトライフへ。	{VERSION}')
@@ -61,8 +64,8 @@ if __name__ == '__main__':
     # APIクライアント生成
     api = HatenaPhotoLife(
             WSSE.from_json(
-                FileReader.json(Path.here('secret.json')),
-                FileReader.json(Path.here('secret-schema.json'))))
+                Path.here('secret.json'),
+                Path.here('secret-schema.json')))
     # リクエスト
     res = api.post(args.path, title=args.title, folder=args.folder, generator=args.generator) 
     if res.ok:

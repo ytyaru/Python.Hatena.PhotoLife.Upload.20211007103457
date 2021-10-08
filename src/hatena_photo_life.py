@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 # coding: utf8
+import os
 import requests
 import mimetypes
 import xmltodict
+from path import Path
 class HatenaPhotoLife:
     def __init__(self, headers:dict=None):
         self.__headers = headers if headers else {}
         self.__base_url = 'https://f.hatena.ne.jp/atom'
     def post(self, path:str, title:str=None, folder:str=None, generator:str=None):
+        if not os.path.isfile(path): raise FileNotFoundError(f'[ERROR] 指定されたファイルは存在しません。: {path}\nhttps://f.hatena.ne.jp/help')
+        mimetype = mimetypes.guess_type(path)[0]
+        if Path.ext(path).lower() not in ['png', 'jpg', 'jpeg', 'gif']: raise ValueError(f'[ERROR] 指定されたファイルはpng,jpg,gifのいずれでもありません。: {path}\nhttps://f.hatena.ne.jp/help')
+        if 10*1000*1000 < os.path.getsize(path): raise ValueError(f'[ERROR] 指定されたファイルのサイズは10MBを超えています。: {path}\nhttps://f.hatena.ne.jp/help')
+
         data = self._make_request_data(
             path = path,
             title = os.path.basename(path) if not title else title,
@@ -29,4 +36,10 @@ class HatenaPhotoLife:
         folder = '' if not folder else f'<dc:subject>{folder}</dc:subjetct>'
         generator = '' if not generator else f'<generator>{generator}</generator>'
         return f'<entry xmlns="http://purl.org/atom/ns#">{title}{content}{folder}{generator}</entry>'
-    
+    @property
+    def PostUri(self): return f'{self.__base_url}/post'
+    @property
+    def EditUri(self): return f'{self.__base_url}/edit'
+    @property
+    def FeedUri(self): return f'{self.__base_url}/feed'
+

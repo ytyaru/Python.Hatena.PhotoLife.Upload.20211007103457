@@ -67,7 +67,7 @@ class Path:
     @classmethod
     def here(cls, path): # このファイルからの絶対パス（呼出元ファイルを基準としたパス）
         return cls.__expand(os.path.join(os.path.dirname(os.path.abspath(inspect.stack()[1].filename)), path))
-        return cls.__expand(os.path.join(os.path.dirname(os.path.abspath(__file__)), path))
+#        return cls.__expand(os.path.join(os.path.dirname(os.path.abspath(__file__)), path))
     @classmethod
     def name(cls, path): # このファイル名
         return os.path.basename(path)
@@ -95,6 +95,7 @@ class FileReader:
 ```python
 ```
 
+wsse.py
 ```python
 from base64 import b64encode
 from datetime import datetime
@@ -128,6 +129,8 @@ class WSSE:
         return f'UsernameToken Username="{username}", PasswordDigest="{b64encode(b_digest).decode()}", Nonce="{b64encode(b_nonce).decode()}", Created="{created}"'
 ```
 
+hatena_photo_life.py
+
 ```python
 class HatenaPhotoLife:
     def __init__(self, headers:dict=None):
@@ -139,7 +142,7 @@ class HatenaPhotoLife:
     def get(self): pass
     def feed(self): pass
     @property
-    def PostUri(self): return f'{self.__base_url}/post
+    def PostUri(self): return f'{self.__base_url}/post'
     @property
     def EditUri(self): return f'{self.__base_url}/edit'
     @property

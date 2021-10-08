@@ -6,15 +6,16 @@ from hashlib import sha1
 import random
 import json
 import jsonschema 
+from FileReader import FileReader
 class WSSE:
     @classmethod
     def from_str(cls, username:str, api_key:str):
         return cls._make_header(username, api_key)
     @classmethod
     def from_json(cls, path, schema_path=None):
-        secret = FileReader.json(Path.here('secret.json'))
+        secret = FileReader.json(path)
         if schema_path:
-            schema = FileReader.json(Path.here('secret-schema.json'))
+            schema = FileReader.json(schema_path)
             try:
                 jsonschema.validate(secret, schema)
             except jsonschema.ValidationError as e:
@@ -24,7 +25,7 @@ class WSSE:
         return cls._make_header(secret['username'], secret['api_key'])
     @classmethod
     def _make_header(cls, username:str, api_key:str):
-        return {'X-WSSE': self._wsse(username, api_key)}
+        return {'X-WSSE': cls._wsse(username, api_key)}
     @classmethod
     def _wsse(cls, username:str, api_key:str) -> str:
         created = datetime.now().isoformat() + "Z"
